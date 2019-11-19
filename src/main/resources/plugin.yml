@@ -1,0 +1,9 @@
+name: Pathfinding
+main: ch.frus.studium.logistik.mc.PathfindingPlugin
+version: 0.1.0
+author: Florian Rusch <dev@florianrusch.de>
+depend: [Citizens]
+commands:
+  astar:
+    description: This is a demo command.
+    usage: /<command>

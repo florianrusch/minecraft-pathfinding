@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  minecraft-server:
+    image: itzg/minecraft-server
+    ports:
+      - '25565:25565'
+      - '5005:5005'
+
+    # https://github.com/itzg/docker-minecraft-server#server-configuration
+    environment:
+      EULA: 'TRUE'
+      TYPE: 'BUKKIT'
+      VERSION: '1.14.4-R0.1-SNAPSHOT'
+      DEBUG: 'TRUE'
+
+      MODE: 'creative'
+      # SEED: ''
+      DIFFICULTY: 'peaceful'
+      LEVEL_TYPE: 'FLAT' # 'default'
+      ALLOW_FLIGHT: 'TRUE'
+
+      # WHITELIST: 'chamo_at'
+      OPS: 'chamo_at'
+
+      # Needed?
+      ENABLE_COMMAND_BLOCK: 'false'
+      SPAWN_ANIMALS: 'false'
+      SPAWN_NPCS: 'true' # Must this be enabled to create a npc?
+
+      # Remove unneeded stuff
+      ALLOW_NETHER: 'false'
+      ALLOW_END: 'false'
+      ANNOUNCE_PLAYER_ACHIEVEMENTS: 'false'
+      GENERATE_STRUCTURES: 'false'
+      SNOOPER_ENABLED: 'false'
+      SPAWN_MONSTERS: 'false'
+      PVP: 'false'
+      ONLINE_MODE: 'FALSE'
+
+      # Java
+#      JVM_OPTS: "-Xdebug -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=n"
+      JVM_OPTS: "-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
+
+    volumes:
+      - .data:/data
+    tty: true
+    stdin_open: true
+    # restart: always
