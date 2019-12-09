@@ -133,8 +133,10 @@ public class AStar extends Algorithm {
         double minFScore = Integer.MAX_VALUE;
 
         for (Block b : openList) {
-            if (fScore.get(b) < minFScore) {
+            int f = fScore.get(b);
+            if (f < minFScore) {
                 blockWithLowestFScore = b;
+                minFScore = f;
             }
         }
 
