@@ -29,7 +29,11 @@ public class PathfindingCommands implements CommandExecutor {
 
         Player player = (Player) sender;
         if(cmd.getName().equalsIgnoreCase("astar")){
-            return this.pathfinder.astar(player);
+            try {
+                return this.pathfinder.astar(player);
+            } catch (InterruptedException e) {
+                return false;
+            }
         }
         return false;
     }

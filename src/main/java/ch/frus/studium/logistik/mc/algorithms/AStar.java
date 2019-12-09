@@ -21,7 +21,6 @@ public class AStar extends Algorithm {
     private Block endBlock;
 
     private ArrayList<Block> openList = new ArrayList<>();
-    private ArrayList<Block> closedList = new ArrayList<>();
 
     // Current Block, Successor
     private HashMap<Block, Block> cameFrom = new HashMap<>();
@@ -103,7 +102,7 @@ public class AStar extends Algorithm {
                 this.log.info("Record it!");
 
                 this.cameFrom.put(currentBlock, successor);
-                this.gScore.put(successor, tentativeGScore);
+                this.gScore.put(successor, tentativeGScore); // TODO bug existing
                 this.fScore.put(successor, getEstimatedDistance(successor, this.endBlock));
 
                 if (!this.openList.contains(successor)) {

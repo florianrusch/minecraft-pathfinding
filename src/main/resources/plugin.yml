@@ -1,5 +1,6 @@
 name: Pathfinding
 main: ch.frus.studium.logistik.mc.PathfindingPlugin
+api-version: '1.14'
 version: 0.1.0
 author: Florian Rusch <dev@florianrusch.de>
 depend: [Citizens]

@@ -48,14 +48,14 @@ public class Pathfinder {
         return endSelections.containsKey(p) && startSelections.containsKey(p);
     }
 
-    boolean astar(Player p) {
+    boolean astar(Player p) throws InterruptedException {
         if (this.hasPlayerSelections(p)) {
             p.sendMessage(ChatColor.GREEN + "Start A* algorithm");
 
             AStar aStar = new AStar(this.getStartSelection(p), this.getEndSelection(p));
             ArrayList<Block> path = aStar.run();
 
-            path.forEach((Block b) -> log.info(b.toString()));
+            path.forEach((Block b) -> this.log.info(b.getLocation().toString()));
 
             return true;
         } else {
