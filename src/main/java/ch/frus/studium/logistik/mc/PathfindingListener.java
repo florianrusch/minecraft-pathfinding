@@ -45,9 +45,9 @@ public class PathfindingListener implements Listener {
                 if (this.pathfinder.hasPlayerSelections(player)) {
                     this.pathfinder.removeEndSelection(player);
                 } else if (this.pathfinder.startSelectionsContainsKey(player)) {
-                    this.pathfinder.addEndSelection(player, event.getClickedBlock());
+                    this.pathfinder.addEndSelection(player, Objects.requireNonNull(event.getClickedBlock()).getRelative(0,1,0));
                 } else {
-                    this.pathfinder.addStartSelection(player, event.getClickedBlock());
+                    this.pathfinder.addStartSelection(player, Objects.requireNonNull(event.getClickedBlock()).getRelative(0,1,0));
                 }
 
                 log.info("Selection update - " + player.getDisplayName() + "(" + this.pathfinder.getStartSelection(player) + "<->" + this.pathfinder.getEndSelection(player) + ")");
