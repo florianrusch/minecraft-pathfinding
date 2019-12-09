@@ -87,6 +87,12 @@ public class AStar extends Algorithm {
         for (Block successor : successors) {
             this.log.info("###################");
             this.log.info("Successor: " + successor.getLocation().toString());
+
+            if (this.cameFrom.containsKey(successor)) {
+                this.log.info("Block already handled");
+                continue;
+            }
+
             int tentativeGScore = this.gScore.get(currentBlock) + 1;
             this.log.info("tentativeGScore: " + tentativeGScore);
             this.log.info("old gScore: " + this.gScore.get(successor));
