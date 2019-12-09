@@ -54,7 +54,12 @@ public class AStar extends Algorithm {
                 break;
             }
 
+            this.log.info("########################################################");
+            this.log.info("run loop: " + counter);
+            this.log.info("size openlist: " + this.openList.size());
             Block currentBlock = getLowestFScoreBlock();
+            this.log.info("current block: " + currentBlock.getLocation());
+            this.log.info("fscore: " + this.fScore.get(currentBlock));
 
             if (currentBlock == this.endBlock) {
                 Block i = this.startBlock;
@@ -80,17 +85,26 @@ public class AStar extends Algorithm {
         ArrayList<Block> successors = getSuccessor(currentBlock);
 
         for (Block successor : successors) {
+            this.log.info("###################");
+            this.log.info("Successor: " + successor.getLocation().toString());
             int tentativeGScore = this.gScore.get(currentBlock) + 1;
+            this.log.info("tentativeGScore: " + tentativeGScore);
+            this.log.info("old gScore: " + this.gScore.get(successor));
+            this.log.info("tentG < gScore: " + (tentativeGScore < this.gScore.get(successor)));
 
             if (this.gScore.get(successor) > tentativeGScore) {
                 // This path to neighbor is better than any previous one. Record it!
+                this.log.info("Record it!");
 
                 this.cameFrom.put(currentBlock, successor);
                 this.gScore.put(successor, tentativeGScore);
                 this.fScore.put(successor, getEstimatedDistance(successor, this.endBlock));
 
                 if (!this.openList.contains(successor)) {
+                    this.log.info("Add to openlist");
                     this.openList.add(successor);
+                } else {
+                    this.log.info("Already on openlist");
                 }
             }
         }
