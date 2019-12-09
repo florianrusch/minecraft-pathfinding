@@ -33,13 +33,11 @@ public class PathfindingListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         log.info("onPlayerInteract");
 
-        if (event.useItemInHand() == Event.Result.DENY) {
+        if (event.useItemInHand() == Event.Result.DENY || event.getHand() == EquipmentSlot.OFF_HAND) {
+            event.setCancelled(true);
             return;
         }
 
-        if (event.getHand() == EquipmentSlot.OFF_HAND) {
-            return;
-        }
         if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
             if (Objects.requireNonNull(event.getItem()).getType().equals(Material.STICK)) {
                 Player player = event.getPlayer();
@@ -53,6 +51,7 @@ public class PathfindingListener implements Listener {
                 }
 
                 log.info("Selection update - " + player.getDisplayName() + "(" + this.pathfinder.getStartSelection(player) + "<->" + this.pathfinder.getEndSelection(player) + ")");
+                event.setCancelled(true);
             }
         }
     }
