@@ -11,6 +11,12 @@ import static org.bukkit.Bukkit.getLogger;
 public class AStar extends Algorithm {
     private final Logger log = getLogger();
 
+    @SuppressWarnings("FieldCanBeLocal")
+    private final Integer maxIteration = 100;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final Integer whileDelayMilli = 100;
+
+    @SuppressWarnings("FieldCanBeLocal")
     private Block startBlock;
     private Block endBlock;
 
@@ -37,13 +43,16 @@ public class AStar extends Algorithm {
         this.fScore.put(this.startBlock, getEstimatedDistance(this.startBlock, this.endBlock));
     }
 
-    public ArrayList<Block> run() {
+    public ArrayList<Block> run() throws InterruptedException {
         ArrayList<Block> path = new ArrayList<>();
 
         this.log.info("init run");
 
         int counter = 0;
-        while(!openList.isEmpty()) {
+        while(!this.openList.isEmpty()) {
+            if (counter == this.maxIteration) {
+                break;
+            }
 
             Block currentBlock = getLowestFScoreBlock();
 
@@ -59,6 +68,9 @@ public class AStar extends Algorithm {
 
             this.openList.remove(currentBlock);
             this.expandBlock(currentBlock);
+
+            Thread.sleep(this.whileDelayMilli);
+            counter++;
         }
 
         return path;
