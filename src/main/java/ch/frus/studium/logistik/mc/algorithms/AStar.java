@@ -120,14 +120,12 @@ public class AStar extends Algorithm {
     }
 
     private int getEstimatedDistance(Block start, Block destination) {
-//        return Math.pow(
-//                Math.pow(start.getX() - destination.getX(), 2)
-//                        + Math.pow(start.getY() - destination.getY(), 2)
-//                        + Math.pow(start.getZ() - destination.getZ(), 2),
-//                0.5d
-//        );
-        return (start.getX() - destination.getX()) + (start.getY() - destination.getY());
-        // + (start.getZ() - destination.getZ())
+        return (int) Math.pow(
+                Math.pow(start.getX() - destination.getX(), 2)
+                        + Math.pow(start.getY() - destination.getY(), 2)
+                        + Math.pow(start.getZ() - destination.getZ(), 2),
+                0.5d
+        );
     }
 
     private Block getLowestFScoreBlock() {
