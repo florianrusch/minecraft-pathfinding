@@ -28,11 +28,11 @@ public class AStar extends Algorithm {
     private HashMap<Block, Block> cameFrom = new HashMap<>();
 
     // gScore[n] is the cost of the cheapest path from start to n currently known
-    private HashMap<Block, Integer> gScore = new HashMap<>();
+    private HashMap<Block, Double> gScore = new HashMap<>();
 
     // best estimate of the cost of the path going through the current node
     // fScore[n] := gScore[n] + h(n)
-    private HashMap<Block, Integer> fScore = new HashMap<>();
+    private HashMap<Block, Double> fScore = new HashMap<>();
 
 
     public AStar(Block startBlock, Block endBlock) {
@@ -40,7 +40,7 @@ public class AStar extends Algorithm {
         this.endBlock = endBlock;
 
         this.openList.add(startBlock);
-        this.gScore.put(this.startBlock, 0);
+        this.gScore.put(this.startBlock, 0.00);
         this.fScore.put(this.startBlock, getEstimatedDistance(this.startBlock, this.endBlock));
     }
 
@@ -88,7 +88,7 @@ public class AStar extends Algorithm {
                 continue;
             }
 
-            int tentativeGScore = this.gScore.get(currentBlock) + 1;
+            double tentativeGScore = this.gScore.get(currentBlock) + this.getEstimatedDistance(currentBlock, successor);
             this.log.info("tentativeGScore: " + tentativeGScore);
             this.log.info("old gScore: " + this.gScore.get(successor));
             this.log.info("tentG < gScore: " + (tentativeGScore < this.gScore.get(successor)));
@@ -132,12 +132,12 @@ public class AStar extends Algorithm {
         // Check if they are air
             // Else check one block above (jump)
 
-        successors.forEach((Block b) -> this.gScore.put(b, Integer.MAX_VALUE));
+        successors.forEach((Block b) -> this.gScore.put(b, Double.MAX_VALUE));
         return successors;
     }
 
-    private int getEstimatedDistance(Block start, Block destination) {
-        return (int) Math.pow(
+    private double getEstimatedDistance(Block start, Block destination) {
+        return Math.pow(
                 Math.pow(start.getX() - destination.getX(), 2)
                         + Math.pow(start.getY() - destination.getY(), 2)
                         + Math.pow(start.getZ() - destination.getZ(), 2),
@@ -153,7 +153,10 @@ public class AStar extends Algorithm {
         this.log.info("### start getLowestFScoreBlock ###");
 
         for (Block b : openList) {
-            int f = fScore.get(b);
+            double f = fScore.get(b);
+
+            this.log.info(Utils.getLocationString(b) + ": " + f);
+
             if (f < minFScore) {
                 blockWithLowestFScore = b;
                 minFScore = f;
