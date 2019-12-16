@@ -78,6 +78,7 @@ public class Pathfinder {
                 this.log.log(Level.SEVERE, e.getMessage(), e);
             }
 
+            assert path != null;
             path.forEach((Block b) -> {
                 this.log.info(getLocationString(b.getLocation()));
                 this.printPath(b);

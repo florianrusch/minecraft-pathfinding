@@ -49,22 +49,13 @@ public class AStar extends Algorithm {
     }
 
     public ArrayList<Block> run() throws InterruptedException, NoPathException {
-        this.log.info("init run");
-
         int counter = 0;
         while(!this.openList.isEmpty()) {
             counter++;
-            if (counter == this.maxIteration) {
+            if (counter == this.maxIteration)
                 break;
-            }
-
-            this.log.info(ANSI_WHITE_BACKGROUND + ANSI_RED +"########################################################" + ANSI_RESET);
-            this.log.info("loop-cycle:              " + counter);
-            this.log.info("size openlist:           " + this.openList.size());
 
             Block currentBlock = getLowestFScoreBlock();
-            this.log.info("lowest fScore block:     " + Utils.getLocationString(currentBlock));
-            this.log.info("fscore:                  " + this.fScore.get(currentBlock));
 
             this.openList.remove(currentBlock);
             this.expandBlock(currentBlock);
@@ -82,34 +73,22 @@ public class AStar extends Algorithm {
     }
 
     private void expandBlock(Block currentBlock) {
-        ArrayList<Block> successors = getSuccessor(currentBlock);
-
-        for (Block successor : successors) {
-            this.log.info("Successor: " + getLocationString(successor));
+        for (Block successor : getSuccessor(currentBlock)) {
 
             if (this.cameFrom.containsKey(successor)) {
-                this.log.info("> Already handled");
                 continue;
             }
 
             double tentativeGScore = this.gScore.get(currentBlock) + this.getEstimatedDistance(currentBlock, successor);
 
             if (tentativeGScore <= this.gScore.get(successor)) {
-                // This path to neighbor is better than any previous one. Record it!
-                this.log.info("> Record it! (Tentative smaller then gScore)");
-
                 this.cameFrom.put(successor, currentBlock);
                 this.gScore.put(successor, tentativeGScore);
-                this.fScore.put(successor, getEstimatedDistance(successor, this.endBlock));
+                this.fScore.put(successor, this.getEstimatedDistance(successor, this.endBlock));
 
                 if (!this.openList.contains(successor)) {
-                    this.log.info("> Add to openlist");
                     this.openList.add(successor);
-                } else {
-                    this.log.info("> Already on openlist");
                 }
-            } else {
-                this.log.info("> tentative smaller: " + tentativeGScore + " > " + this.gScore.get(successor));
             }
         }
     }
@@ -131,23 +110,19 @@ public class AStar extends Algorithm {
             successors.add(east);
 
             if (north.isPassable()) {
-                // North west
-                if (west.isPassable() && west.getRelative(DOWN).getType().isSolid())
+                if (west.isPassable() && west.getRelative(DOWN).getType().isSolid()) // North west
                     successors.add(block.getRelative(-1, lvl, -1));
 
-                // North east
-                if (east.isPassable() && east.getRelative(DOWN).getType().isSolid())
+                if (east.isPassable() && east.getRelative(DOWN).getType().isSolid()) // North east
                     successors.add(block.getRelative(1, lvl, -1));
             }
 
             if (south.isPassable()) {
-                // South west
-                if (west.isPassable() && west.getRelative(DOWN).getType().isSolid())
-                    successors.add(block.getRelative(-1, lvl, 1)); // Get SW
+                if (west.isPassable() && west.getRelative(DOWN).getType().isSolid()) // South west
+                    successors.add(block.getRelative(-1, lvl, 1));
 
-                // South east
-                if (east.isPassable() && west.getRelative(DOWN).getType().isSolid())
-                    successors.add(block.getRelative(1, lvl, 1)); // Get SE
+                if (east.isPassable() && west.getRelative(DOWN).getType().isSolid()) // South east
+                    successors.add(block.getRelative(1, lvl, 1));
             }
         }
 
@@ -174,22 +149,14 @@ public class AStar extends Algorithm {
         Block blockWithLowestFScore = null;
         double minFScore = Integer.MAX_VALUE;
 
-        this.log.info("");
-        this.log.info("### start getLowestFScoreBlock ###");
-
         for (Block b : openList) {
             double f = fScore.get(b);
-
-            this.log.info(Utils.getLocationString(b) + ": " + f);
 
             if (f < minFScore) {
                 blockWithLowestFScore = b;
                 minFScore = f;
             }
         }
-
-        this.log.info("### end getLowestFScoreBlock ###");
-        this.log.info("");
 
         return blockWithLowestFScore;
     }
