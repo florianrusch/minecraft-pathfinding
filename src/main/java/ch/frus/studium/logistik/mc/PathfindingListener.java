@@ -1,6 +1,7 @@
 package ch.frus.studium.logistik.mc;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+import static ch.frus.studium.logistik.mc.Utils.getLocationString;
 import static org.bukkit.Bukkit.getLogger;
 
 public class PathfindingListener implements Listener {
@@ -40,15 +42,32 @@ public class PathfindingListener implements Listener {
             if (Objects.requireNonNull(event.getItem()).getType().equals(Material.STICK)) {
                 Player player = event.getPlayer();
 
-                if (this.pathfinder.hasPlayerSelections(player)) {
-                    this.pathfinder.removeEndSelection(player);
-                } else if (this.pathfinder.startSelectionsContainsKey(player)) {
-                    this.pathfinder.addEndSelection(player, Objects.requireNonNull(event.getClickedBlock()).getRelative(0,1,0));
-                } else {
-                    this.pathfinder.addStartSelection(player, Objects.requireNonNull(event.getClickedBlock()).getRelative(0,1,0));
+                if (this.pathfinder.hasSelection(player)) {
+                    player.sendMessage("Selection reseted");
+                    log.info("Selection reseted for player \"" + player.getDisplayName() + "\"");
+                    this.pathfinder.removeSelection(player);
+
+                    event.setCancelled(true);
+                    return;
                 }
 
-                log.info("Selection update - " + player.getDisplayName() + "(" + this.pathfinder.getStartSelection(player) + "<->" + this.pathfinder.getEndSelection(player) + ")");
+                if (this.pathfinder.hasStartSelection(player)) {
+                    Block b = Objects.requireNonNull(event.getClickedBlock()).getRelative(0,1,0);
+                    player.sendMessage("End block selected: " + getLocationString(b.getLocation()));
+                    log.info("Selection update for player \"" + player.getDisplayName() + "\"");
+                    log.info("End: " + getLocationString(b.getLocation()));
+                    this.pathfinder.addEndSelection(player, b);
+
+                    event.setCancelled(true);
+                    return;
+                }
+
+                Block b = Objects.requireNonNull(event.getClickedBlock()).getRelative(0,1,0);
+                player.sendMessage("Start block selected: " + getLocationString(b.getLocation()));
+                log.info("Selection update for player \"" + player.getDisplayName() + "\"");
+                log.info("Start: " + getLocationString(b.getLocation()));
+                this.pathfinder.addStartSelection(player, b);
+
                 event.setCancelled(true);
             }
         }
