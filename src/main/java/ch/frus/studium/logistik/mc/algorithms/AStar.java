@@ -7,8 +7,12 @@ import org.bukkit.block.Block;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
+import static ch.frus.studium.logistik.mc.Utils.*;
 import static org.bukkit.Bukkit.getLogger;
+import static org.bukkit.block.BlockFace.DOWN;
+import static org.bukkit.block.BlockFace.UP;
 
 public class AStar extends Algorithm {
     private final Logger log = getLogger();
@@ -114,23 +118,47 @@ public class AStar extends Algorithm {
     }
 
     private ArrayList<Block> getSuccessor(Block block) {
-        ArrayList<Block> successors = new ArrayList<Block>();
+        ArrayList<Block> successors = new ArrayList<>();
 
-        successors.add(block.getRelative(0,0,-1)); // Get North
-        successors.add(block.getRelative(-1,0,0)); // Get West
-        successors.add(block.getRelative(0,0,1)); // Get South
-        successors.add(block.getRelative(1,0,0)); // Get East
+        int[] level = {-1, 0, 1};
 
-        // Get NW
-        // Get SW
-        // Get SE
-        // Get NE
+        for(int lvl: level) {
+            Block north = block.getRelative(0, lvl,-1);
+            Block west  = block.getRelative(-1, lvl,0);
+            Block south = block.getRelative(0, lvl,1);
+            Block east  = block.getRelative(1, lvl,0);
 
-        // Get High + N NW W SW S SE E NE
-        // Get Low + N NW W SW S SE E NE
+            successors.add(north);
+            successors.add(west);
+            successors.add(south);
+            successors.add(east);
 
-        // Check if they are air
-            // Else check one block above (jump)
+            if (north.isPassable()) {
+                // North west
+                if (west.isPassable() && west.getRelative(DOWN).getType().isSolid())
+                    successors.add(block.getRelative(-1, lvl, -1));
+
+                // North east
+                if (east.isPassable() && east.getRelative(DOWN).getType().isSolid())
+                    successors.add(block.getRelative(1, lvl, -1));
+            }
+
+            if (south.isPassable()) {
+                // South west
+                if (west.isPassable() && west.getRelative(DOWN).getType().isSolid())
+                    successors.add(block.getRelative(-1, lvl, 1)); // Get SW
+
+                // South east
+                if (east.isPassable() && west.getRelative(DOWN).getType().isSolid())
+                    successors.add(block.getRelative(1, lvl, 1)); // Get SE
+            }
+        }
+
+        successors = successors.stream()
+                .filter(Block::isPassable)
+                .filter(b -> b.getRelative(DOWN).getType().isSolid())
+                .filter(b -> b.getRelative(UP).isPassable())
+                .collect(Collectors.toCollection(ArrayList::new));
 
         successors.forEach((Block b) -> this.gScore.put(b, Double.MAX_VALUE));
         return successors;
