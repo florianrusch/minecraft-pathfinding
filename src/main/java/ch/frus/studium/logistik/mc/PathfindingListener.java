@@ -31,8 +31,6 @@ public class PathfindingListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        log.info("onPlayerInteract");
-
         if (event.useItemInHand() == Event.Result.DENY || event.getHand() == EquipmentSlot.OFF_HAND) {
             event.setCancelled(true);
             return;

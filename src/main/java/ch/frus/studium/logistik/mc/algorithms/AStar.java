@@ -49,16 +49,18 @@ public class AStar extends Algorithm {
 
         int counter = 0;
         while(!this.openList.isEmpty()) {
+            counter++;
             if (counter == this.maxIteration) {
                 break;
             }
 
-            this.log.info("########################################################");
-            this.log.info("run loop: " + counter);
-            this.log.info("size openlist: " + this.openList.size());
+            this.log.info(ANSI_WHITE_BACKGROUND + ANSI_RED +"########################################################" + ANSI_RESET);
+            this.log.info("loop-cycle:              " + counter);
+            this.log.info("size openlist:           " + this.openList.size());
+
             Block currentBlock = getLowestFScoreBlock();
-            this.log.info("current block: " + currentBlock.getLocation());
-            this.log.info("fscore: " + this.fScore.get(currentBlock));
+            this.log.info("lowest fScore block:     " + Utils.getLocationString(currentBlock));
+            this.log.info("fscore:                  " + this.fScore.get(currentBlock));
 
             if (currentBlock == this.endBlock) {
                 Block i = this.startBlock;
@@ -74,7 +76,6 @@ public class AStar extends Algorithm {
             this.expandBlock(currentBlock);
 
             Thread.sleep(this.whileDelayMilli);
-            counter++;
         }
 
         return path;
@@ -84,11 +85,10 @@ public class AStar extends Algorithm {
         ArrayList<Block> successors = getSuccessor(currentBlock);
 
         for (Block successor : successors) {
-            this.log.info("###################");
-            this.log.info("Successor: " + successor.getLocation().toString());
+            this.log.info("Successor: " + getLocationString(successor));
 
             if (this.cameFrom.containsKey(successor)) {
-                this.log.info("Block already handled");
+                this.log.info("> Already handled");
                 continue;
             }
 
@@ -99,18 +99,20 @@ public class AStar extends Algorithm {
 
             if (this.gScore.get(successor) > tentativeGScore) {
                 // This path to neighbor is better than any previous one. Record it!
-                this.log.info("Record it!");
+                this.log.info("> Record it! (Tentative smaller then gScore)");
 
                 this.cameFrom.put(currentBlock, successor);
                 this.gScore.put(successor, tentativeGScore); // TODO bug existing
                 this.fScore.put(successor, getEstimatedDistance(successor, this.endBlock));
 
                 if (!this.openList.contains(successor)) {
-                    this.log.info("Add to openlist");
+                    this.log.info("> Add to openlist");
                     this.openList.add(successor);
                 } else {
-                    this.log.info("Already on openlist");
+                    this.log.info("> Already on openlist");
                 }
+            } else {
+                this.log.info("> tentative smaller: " + tentativeGScore + " > " + this.gScore.get(successor));
             }
         }
     }
@@ -151,6 +153,9 @@ public class AStar extends Algorithm {
         Block blockWithLowestFScore = null;
         double minFScore = Integer.MAX_VALUE;
 
+        this.log.info("");
+        this.log.info("### start getLowestFScoreBlock ###");
+
         for (Block b : openList) {
             int f = fScore.get(b);
             if (f < minFScore) {
@@ -158,6 +163,9 @@ public class AStar extends Algorithm {
                 minFScore = f;
             }
         }
+
+        this.log.info("### end getLowestFScoreBlock ###");
+        this.log.info("");
 
         return blockWithLowestFScore;
     }

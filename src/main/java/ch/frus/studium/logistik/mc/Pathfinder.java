@@ -14,8 +14,8 @@ import static org.bukkit.Bukkit.getLogger;
 public class Pathfinder {
     private final Logger log = getLogger();
 
-    private static HashMap<Player, Block> startSelections = new HashMap<Player, Block>();
-    private static HashMap<Player, Block> endSelections = new HashMap<Player, Block>();
+    private static HashMap<Player, Block> startSelections = new HashMap<>();
+    private static HashMap<Player, Block> endSelections = new HashMap<>();
 
     Pathfinder() {
     }
