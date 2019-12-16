@@ -1,5 +1,7 @@
 package ch.frus.studium.logistik.mc.algorithms;
 
+import ch.frus.studium.logistik.mc.NoPathException;
+import ch.frus.studium.logistik.mc.Utils;
 import org.bukkit.block.Block;
 
 import java.util.ArrayList;
@@ -42,9 +44,7 @@ public class AStar extends Algorithm {
         this.fScore.put(this.startBlock, getEstimatedDistance(this.startBlock, this.endBlock));
     }
 
-    public ArrayList<Block> run() throws InterruptedException {
-        ArrayList<Block> path = new ArrayList<>();
-
+    public ArrayList<Block> run() throws InterruptedException, NoPathException {
         this.log.info("init run");
 
         int counter = 0;
@@ -62,23 +62,19 @@ public class AStar extends Algorithm {
             this.log.info("lowest fScore block:     " + Utils.getLocationString(currentBlock));
             this.log.info("fscore:                  " + this.fScore.get(currentBlock));
 
-            if (currentBlock == this.endBlock) {
-                Block i = this.startBlock;
-                while (this.cameFrom.containsKey(i)) {
-                    path.add(i);
-                    i = this.cameFrom.get(i);
-                }
-
-                return path;
-            }
-
             this.openList.remove(currentBlock);
             this.expandBlock(currentBlock);
+
+            if (currentBlock.getLocation().equals(this.endBlock.getLocation())) {
+                return getPath();
+            }
 
             Thread.sleep(this.whileDelayMilli);
         }
 
-        return path;
+//        this.cameFrom.forEach((Block from, Block to) -> from.setType(Material.GLASS));
+
+        throw new NoPathException("There is no path between the selection.");
     }
 
     private void expandBlock(Block currentBlock) {
@@ -101,7 +97,7 @@ public class AStar extends Algorithm {
                 // This path to neighbor is better than any previous one. Record it!
                 this.log.info("> Record it! (Tentative smaller then gScore)");
 
-                this.cameFrom.put(currentBlock, successor);
+                this.cameFrom.put(successor, currentBlock);
                 this.gScore.put(successor, tentativeGScore); // TODO bug existing
                 this.fScore.put(successor, getEstimatedDistance(successor, this.endBlock));
 
@@ -168,5 +164,19 @@ public class AStar extends Algorithm {
         this.log.info("");
 
         return blockWithLowestFScore;
+    }
+
+    private ArrayList<Block> getPath() {
+        Block iteratedBlock = this.endBlock;
+        ArrayList<Block> path = new ArrayList<>();
+        while (this.cameFrom.containsKey(iteratedBlock)) {
+            path.add(iteratedBlock);
+
+            if (iteratedBlock.equals(this.startBlock))
+                break;
+
+            iteratedBlock = this.cameFrom.get(iteratedBlock);
+        }
+        return path;
     }
 }
