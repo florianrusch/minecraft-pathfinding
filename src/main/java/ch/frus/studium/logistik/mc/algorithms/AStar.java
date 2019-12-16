@@ -93,16 +93,13 @@ public class AStar extends Algorithm {
             }
 
             double tentativeGScore = this.gScore.get(currentBlock) + this.getEstimatedDistance(currentBlock, successor);
-            this.log.info("tentativeGScore: " + tentativeGScore);
-            this.log.info("old gScore: " + this.gScore.get(successor));
-            this.log.info("tentG < gScore: " + (tentativeGScore < this.gScore.get(successor)));
 
-            if (this.gScore.get(successor) > tentativeGScore) {
+            if (tentativeGScore <= this.gScore.get(successor)) {
                 // This path to neighbor is better than any previous one. Record it!
                 this.log.info("> Record it! (Tentative smaller then gScore)");
 
                 this.cameFrom.put(successor, currentBlock);
-                this.gScore.put(successor, tentativeGScore); // TODO bug existing
+                this.gScore.put(successor, tentativeGScore);
                 this.fScore.put(successor, getEstimatedDistance(successor, this.endBlock));
 
                 if (!this.openList.contains(successor)) {
