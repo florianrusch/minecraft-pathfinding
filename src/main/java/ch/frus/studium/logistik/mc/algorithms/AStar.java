@@ -1,7 +1,6 @@
 package ch.frus.studium.logistik.mc.algorithms;
 
 import ch.frus.studium.logistik.mc.NoPathException;
-import ch.frus.studium.logistik.mc.Utils;
 import org.bukkit.block.Block;
 
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static ch.frus.studium.logistik.mc.Utils.*;
 import static org.bukkit.Bukkit.getLogger;
 import static org.bukkit.block.BlockFace.DOWN;
 import static org.bukkit.block.BlockFace.UP;
@@ -66,8 +64,6 @@ public class AStar extends Algorithm {
 
             Thread.sleep(this.whileDelayMilli);
         }
-
-//        this.cameFrom.forEach((Block from, Block to) -> from.setType(Material.GLASS));
 
         throw new NoPathException("There is no path between the selection.");
     }
